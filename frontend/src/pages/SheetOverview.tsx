@@ -4,10 +4,15 @@ import { Link } from "react-router-dom";
 const SheetOverview: React.FC = () => {
   const [sheetData, setSheetData] = useState<{ [key: string]: any[][] }>({});
 
+  // useEffect triggers once on component render, and whenever a dependency changes
   useEffect(() => {
     fetch("/api/sheet")
-      .then((res) => res.json())
-      .then((data) => setSheetData(data));
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => setSheetData(data))
+      .catch((err) => console.error("Error loading sheet data", err));
   }, []);
 
   return (

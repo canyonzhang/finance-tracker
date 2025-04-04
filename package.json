@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "uvicorn app.main:app --reload",
+    "serve": "uvicorn app.api.main:app --reload",
     "dev": "vite"
   },
   "keywords": [],

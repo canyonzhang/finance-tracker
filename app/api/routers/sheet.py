@@ -2,9 +2,8 @@ from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from app.services.sheets import get_sheet_data
+from app.api.services.sheets import get_sheet_data
 import logging
-
 
 logger = logging.getLogger("uvicorn.access")
 
