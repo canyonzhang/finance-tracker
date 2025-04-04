@@ -2,3 +2,6 @@ venv/
 __pycache__/
 .env
 credentials.json
+node_modules/
+dist/
+app/static/css/styles.css

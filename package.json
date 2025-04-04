@@ -1,0 +1,25 @@
+{
+  "name": "finance-tracker",
+  "version": "1.0.0",
+  "description": "A personal finance tracking application built with FastAPI. This tool is designed to help you monitor your income, spending, and net worth, while integrating with services like Google Sheets and Plaid for real-time data tracking.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "uvicorn app.main:app --reload",
+    "dev": "vite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.2",
+    "vite": "^6.2.5"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.2",
+    "react-router-dom": "^7.4.1"
+  }
+}
