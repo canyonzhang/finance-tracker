@@ -20,3 +20,9 @@ def read_month(month: str, request: Request):
     month_data = sheet_data.get(month)
     logger.info("Sheet data for %s fetched successfully: %s", month, month_data)
     return JSONResponse(content={"month": month, "data": month_data})
+
+@router.post("/sheet", response_class=HTMLResponse)
+def create_sheet(request: Request) -> JSONResponse:
+    result = create_new_template() # users can only create new sheets based on existing templates
+    return result
+

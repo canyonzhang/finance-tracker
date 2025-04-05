@@ -25,3 +25,5 @@ def get_sheet_data():
     _cache["timestamp"] = time()
     logger.info("Cache Miss")
     return _cache["data"]
+# allows a user to create a new template and save it to the Google Sheets
+# def create_new_template():

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import TemplateModal from "../components/TemplateModal";
 
 const SheetOverview: React.FC = () => {
+  // always defined state variables at the top
   const [sheetData, setSheetData] = useState<{ [key: string]: any[][] }>({});
-
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     fetch("/api/sheet")
       .then((res) => {
@@ -32,9 +34,13 @@ const SheetOverview: React.FC = () => {
         {/* Templates Section */}
         <div>
           <h2 className="text-xl font-semibold mb-2">Templates</h2>
-          <button className="mb-4 bg-green-300 text-black px-4 py-2 rounded hover:bg-green-200 transition">
+          <button
+            onClick={() => setShowModal(true)}
+            className="mb-4 bg-green-300 text-black px-4 py-2 rounded hover:bg-green-200 transition"
+          >
             + Add Template
           </button>
+          {showModal && <TemplateModal onClose={() => setShowModal(false)} />}
           <ul className="grid grid-cols-1 gap-2">
             {templates.map(([template]) => (
               <li key={template}>
