@@ -3,7 +3,9 @@ from fastapi.responses import HTMLResponse
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from app.api.services.sheets import get_sheet_data
+from app.api.services.sheets import create_new_template
 import logging
+from app.api.models.TemplateRequest import TemplateCreateRequest
 
 logger = logging.getLogger("uvicorn.access")
 
@@ -21,8 +23,9 @@ def read_month(month: str, request: Request):
     logger.info("Sheet data for %s fetched successfully: %s", month, month_data)
     return JSONResponse(content={"month": month, "data": month_data})
 
-@router.post("/sheet", response_class=HTMLResponse)
-def create_sheet(request: Request) -> JSONResponse:
-    result = create_new_template() # users can only create new sheets based on existing templates
+@router.post("/create-template", response_class=HTMLResponse)
+# receive the payload as a TemplateCreateRequest object 
+def create_sheet(payload: TemplateCreateRequest) -> JSONResponse: 
+    create_new_template(payload) # we can forward the payload to our services
     return result
 

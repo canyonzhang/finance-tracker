@@ -4,8 +4,43 @@ interface TemplateModalProps {
   onClose: () => void;
 }
 
+
 const TemplateModal: React.FC<TemplateModalProps> = ({ onClose }) => {
   const [templateName, setTemplateName] = useState("");
+  const [paycheckCount, setPaycheckCount] = useState(2);
+  const [totalPay, setTotalPay] = useState("");
+  const [includeExtraIncome, setIncludeExtraIncome] = useState(false);
+  const [extraIncomeLabel, setExtraIncomeLabel] = useState("Extra");
+  const [budgetItems, setBudgetItems] = useState<{ name: string; amount: string; isSaving: boolean }[]>([]);
+
+  // specifies a boolean return value
+  const handleCreateTemplate = async (): Promise<boolean> => {
+    try{
+      const response = await fetch("/api/create-template", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: templateName, // worksheet name
+          paycheckCount: paycheckCount, // number of paychecks
+          totalPay: totalPay, // gross pay (per paycheck divded by paycheck count)
+          includeExtraIncome: includeExtraIncome,
+          extraIncomeLabel: extraIncomeLabel,
+          budgetItems: budgetItems, // a list of the user's expenses that they filled on the modal. 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create template");
+      }
+      return true;
+    }
+    catch (error) {
+      console.error("Error creating template", error);
+      return false;
+    }
+  };
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50">
@@ -21,16 +56,130 @@ const TemplateModal: React.FC<TemplateModalProps> = ({ onClose }) => {
 
         <h2 className="text-xl font-semibold mb-4 text-black">Create New Template</h2>
 
-        <label className="block mb-2 text-black">
+        {/* Template Name */}
+        <label className="block mb-4 text-black">
           Template Name
           <input
             type="text"
             value={templateName}
             onChange={(e) => setTemplateName(e.target.value)}
             className="w-full px-3 py-2 mt-1 border rounded-md text-black"
-            placeholder="e.g., Custom Template"
+            placeholder="e.g., April 2025 Budget"
           />
         </label>
+
+        {/* Paycheck Inputs */}
+        <div className="mb-4">
+          <label className="block text-black mb-1">Paychecks Per Month</label>
+          <input
+            type="number"
+            value={paycheckCount}
+            min={1}
+            max={4}
+            onChange={(e) => setPaycheckCount(parseInt(e.target.value))}
+            className="w-full px-3 py-2 border rounded-md text-black"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-black mb-1">Total Gross Pay per Month</label>
+          <input
+            type="text"
+            value={totalPay}
+            onChange={(e) => setTotalPay(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md text-black"
+            placeholder="$5,000.00"
+          />
+        </div>
+
+        {/* Extra Income */}
+        <div className="mb-4">
+          <label className="inline-flex items-center text-black">
+            <input
+              type="checkbox"
+              checked={includeExtraIncome}
+              onChange={(e) => setIncludeExtraIncome(e.target.checked)}
+              className="mr-2"
+            />
+            {" "}Include Extra Income
+          </label>
+          {includeExtraIncome && (
+            <input
+              type="text"
+              value={extraIncomeLabel}
+              onChange={(e) => setExtraIncomeLabel(e.target.value)}
+              className="w-full mt-2 px-3 py-2 border rounded-md text-black"
+              placeholder="e.g., Bonus"
+            />
+          )}
+        </div>
+
+        {/* Budget Items */}
+        <div className="mb-4">
+          <label className="block text-black font-medium mb-1">Add Budget Item</label>
+          <button
+            type="button"
+            className="mb-2 px-3 py-1 bg-green-200 text-black rounded hover:bg-green-300"
+            onClick={() =>
+              setBudgetItems([
+                ...budgetItems,
+                { name: "", amount: "", isSaving: false }
+              ])
+            }
+          >
+            + Add Expense
+          </button>
+          {budgetItems.map((item, idx) => (
+            <div key={idx} className="flex items-center gap-2 mb-2">
+              <input
+                type="text"
+                placeholder="Expense name"
+                value={item.name}
+                onChange={(e) => {
+                  const copy = [...budgetItems];
+                  copy[idx].name = e.target.value;
+                  setBudgetItems(copy);
+                }}
+                className="flex-1 px-2 py-1 border rounded-md text-black"
+              />
+              <input
+                type="text"
+                placeholder="Amount"
+                value={item.amount}
+                onChange={(e) => {
+                  const copy = [...budgetItems];
+                  copy[idx].amount = e.target.value;
+                  setBudgetItems(copy);
+                }}
+                className="w-24 px-2 py-1 border rounded-md text-black"
+              />
+              <label className="text-sm text-black">
+                <input
+                  type="checkbox"
+                  checked={item.isSaving}
+                  onChange={(e) => {
+                    const copy = [...budgetItems];
+                    copy[idx].isSaving = e.target.checked;
+                    setBudgetItems(copy);
+                  }}
+                  className="mr-1"
+                />
+                Saving
+              </label>
+              <button
+                type="button"
+                className="text-red-500 text-sm ml-2"
+                onClick={() => {
+                  const copy = [...budgetItems];
+                  copy.splice(idx, 1);
+                  setBudgetItems(copy);
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
 
         <div className="flex justify-end gap-3 mt-6">
           <button
@@ -40,9 +189,14 @@ const TemplateModal: React.FC<TemplateModalProps> = ({ onClose }) => {
             Cancel
           </button>
           <button
-            onClick={() => {
-              console.log("Submit:", templateName); // placeholder
-              onClose();
+            onClick={async () => {
+              const result = await handleCreateTemplate();
+              if (result === true) {
+                onClose();
+              }
+              else{
+                alert("Failed to create template. Please try again.");
+              }
             }}
             className="bg-blue-400 text-black px-4 py-2 rounded hover:bg-blue-300 transition"
           >
