@@ -4,7 +4,6 @@ interface TemplateModalProps {
   onClose: () => void;
 }
 
-
 const TemplateModal: React.FC<TemplateModalProps> = ({ onClose }) => {
   const [templateName, setTemplateName] = useState("");
   const [paycheckCount, setPaycheckCount] = useState(2);
@@ -12,6 +11,7 @@ const TemplateModal: React.FC<TemplateModalProps> = ({ onClose }) => {
   const [includeExtraIncome, setIncludeExtraIncome] = useState(false);
   const [extraIncomeLabel, setExtraIncomeLabel] = useState("Extra");
   const [budgetItems, setBudgetItems] = useState<{ name: string; amount: string; isSaving: boolean }[]>([]);
+  const [location, setLocation] = useState("");
 
   // specifies a boolean return value
   const handleCreateTemplate = async (): Promise<boolean> => {
@@ -177,10 +177,55 @@ const TemplateModal: React.FC<TemplateModalProps> = ({ onClose }) => {
               >
                 Remove
               </button>
-            </div>
+            </div>      
           ))}
         </div>
+          <div>
+          <select
+              className="w-full px-3 py-2 border rounded-md text-black"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            >
+              <option value="">Select a city</option>
+              <option value="New York City">New York City</option>
+              <option value="San Francisco">San Francisco</option>
+              <option value="Los Angeles">Los Angeles</option>
+              <option value="Chicago">Chicago</option>
+              <option value="Austin">Austin</option>
+              <option value="Miami">Miami</option>
+              <option value="Seattle">Seattle</option>
+              <option value="Atlanta">Atlanta</option>
+              <option value="Boston">Boston</option>
+              <option value="Denver">Denver</option>
+              <option value="Washington DC">Washington DC</option>
+              <option value="Minneapolis">Minneapolis</option>
+              <option value="Phoenix">Phoenix</option>
+              <option value="Las Vegas">Las Vegas</option>
+              <option value="Philadelphia">Philadelphia</option>
+              <option value="Dallas">Dallas</option>
+              <option value="Houston">Houston</option>
+              <option value="Detroit">Detroit</option>
+              <option value="Charlotte">Charlotte</option>
+              <option value="San Diego">San Diego</option>
+              <option value="San Jose">San Jose</option>
+              <option value="Portland">Portland</option>
+              <option value="Columbus">Columbus</option>
+              <option value="Indianapolis">Indianapolis</option>
+              <option value="Jacksonville">Jacksonville</option>
+              <option value="Nashville">Nashville</option>
+              <option value="Oklahoma City">Oklahoma City</option>
+              <option value="Milwaukee">Milwaukee</option>
+              <option value="Louisville">Louisville</option>
+              <option value="Memphis">Memphis</option>
+              <option value="Raleigh">Raleigh</option>
+              <option value="New Orleans">New Orleans</option>
+              <option value="Salt Lake City">Salt Lake City</option>
+              <option value="Kansas City">Kansas City</option>
+              <option value="Albuquerque">Albuquerque</option>
+              <option value="Tucson">Tucson</option>
+            </select>
 
+        </div>
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}

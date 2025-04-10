@@ -14,3 +14,4 @@ class TemplateCreateRequest(BaseModel):
     includeExtraIncome: bool
     extraIncomeLabel: str
     budgetItems: List[BudgetItem] # list of BudgetItem objects
+    location: str # city, state, country
